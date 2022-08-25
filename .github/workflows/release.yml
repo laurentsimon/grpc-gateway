@@ -32,8 +32,19 @@ jobs:
         run: |
           set -euo pipefail
 
+          echo "artifacts:"
+          echo "$ARTIFACTS"
           checksum_file=$(echo "$ARTIFACTS" | jq -r '.[] | select (.type=="Checksum") | .path')
+          echo "checksum_file:"
+          echo "$checksum_file"
           echo "::set-output name=hashes::$(cat $checksum_file | base64 -w0)"
+  test:
+    runs-on: ubuntu-latest
+    needs: [goreleaser]
+    steps:
+      - run: |
+          echo "hashes:"
+          echo "${{ needs.goreleaser.outputs.hashes }}"
   provenance:
     needs: [goreleaser]
     permissions:
