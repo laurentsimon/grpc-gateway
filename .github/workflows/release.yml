@@ -29,11 +29,14 @@ jobs:
         id: hash
         env:
           ARTIFACTS: "${{ steps.run-goreleaser.outputs.artifacts }}"
+          META: "${{ steps.run-goreleaser.outputs.metadata }}"
         run: |
           set -euo pipefail
 
           echo "artifacts:"
           echo "$ARTIFACTS"
+          echo "META:"
+          echo "$META"
           checksum_file=$(echo "$ARTIFACTS" | jq -r '.[] | select (.type=="Checksum") | .path')
           echo "checksum_file:"
           echo "$checksum_file"
